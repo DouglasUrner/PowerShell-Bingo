@@ -14,6 +14,13 @@ function New-BingoFile {
     $f.CreationTime = "1953-10-30"
 }
 
-New-BingoFile C:/users/urner/Desktop/GitHub/PowerShell-Bingo/Setup/foo 2MB
+#New-BingoFile C:/users/urner/Desktop/GitHub/PowerShell-Bingo/Setup/foo 2MB
 
+$Path = "C:/users/urner/Desktop/GitHub/PowerShell-Bingo/Setup/tmp/"
+
+for ($i = 0; $i -lt 1000; $i++) {
+    $FullPath = $Path + $i + ".mt"
+    <# Action that will repeat until the condition is met #>
+    New-BingoFile $FullPath 1KB
+}
 #Read-Host -Prompt "Press Enter to exit"

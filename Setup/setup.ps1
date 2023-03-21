@@ -1,23 +1,26 @@
 function New-BingoFile {
     param (
-        $name,
-        $size,
-        $create,
-        $lastWrite,
-        $lastAccess
+        [string] $FileName,
+        $FileLength
     )
 
-    # Touch file and set size.
-    $f = New-Object System.IO.FileStream $name, Create, ReadWrite
-    #$f.SetLength($size)
+    # Create file.
+    $f = New-Object System.IO.FileStream $FileName, Create, ReadWrite
+    $f.SetLength($FileLength)
     $f.Close()
-
-    # Set times
-    #Get-ChildItem $name | % {
-    #    $_.CreationTime = $create
-    #    $_.LastWriteTime = $lastWrite
-    #    $_.LastAccessTime = $lastAccess
-    #}
+    
+    # Get reference to file and set times.
+    $f = Get-ChildItem($FileName)
+    $f.CreationTime = "1953-10-30"
 }
 
-New-BingoFile deleteMe, 3MB, '02/22/1953 00:00:42', '11/05/1953 03:14:16', '09/22/2001 10:30:53'
+#New-BingoFile C:/users/urner/Desktop/GitHub/PowerShell-Bingo/Setup/foo 2MB
+
+$Path = "C:/users/urner/Desktop/GitHub/PowerShell-Bingo/Setup/tmp/"
+
+for ($i = 0; $i -lt 1000; $i++) {
+    $FullPath = $Path + $i + ".mt"
+    <# Action that will repeat until the condition is met #>
+    New-BingoFile $FullPath 1KB
+}
+#Read-Host -Prompt "Press Enter to exit"

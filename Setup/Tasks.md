@@ -3,6 +3,10 @@ Find powershell command with a name that matches a pattern
 Get help on a command
 Find out the properties & methods for an object
 
+Pipes
+Wildcards
+Objects
+
 Display the date/time a file was created
 Display the date/time a file was modified
 Display the date/time a file was last accessed

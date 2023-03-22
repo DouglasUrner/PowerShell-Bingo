@@ -11,7 +11,7 @@ Display the date/time a file was created
 Display the date/time a file was modified
 Display the date/time a file was last accessed
 Display all of a file's timestamps
-Display file length
+Display file size
 Display file owner
 Display directory contents
 Display file or directory permissions

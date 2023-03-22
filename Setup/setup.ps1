@@ -11,16 +11,51 @@ function New-BingoFile {
     
     # Get reference to file and set times.
     $f = Get-ChildItem($FileName)
-    $f.CreationTime = "1953-10-30"
+    $create = New-RandomDate "1921-09-01"
+    $write = New-RandomDate $create
+    $access = New-RandomDate $write
+    $f.CreationTime = $create
+    $f.LastWriteTime = $write
+    $f.LastAccessTime = $access 
 }
+
+function New-RandomDate {
+    param (
+        [string] $Seed
+    )
+
+    $LeftHyphen = $Seed.IndexOf('-')
+    $RightHyphen = $Seed.LastIndexOf('-')
+
+    $MinYear = $Seed.Substring(0, $LeftHyphen)
+    $MinMonth = $Seed.Substring($LeftHyphen + 1, $RightHyphen - $LeftHyphen - 1)
+    $MinDay = $Seed.Substring($RightHyphen + 1)
+
+    $MaxYear = 2023
+
+    $year = Get-Random -Minimum $MinYear -Maximum $MaxYear
+    $month = Get-Random -Minimum $MinMonth -Maximum 12
+    $day = Get-Random -Minimum $MinDay -Maximum 28
+
+    return $year.ToString() + "-" + $month.ToString() + "-" + $day.ToString()
+}
+
+# Write-Host (New-RandomDate 1921-09-01) ; Read-Host -Prompt "Press Enter to continue"
 
 if ($IsMacOS)
 {
+    Write-Host "Setting up for macOS."
     $Path = "$HOME/Source/GitHub/"
 } elseif ($IsWindows) {
-    $Path = "C:/users/urner/Desktop/GitHub/"
+    Write-Host "Setting up for Windows."
+    $Path = "$HOME/Desktop/GitHub/"
+} else {
+    Write-Warning "OS not detected, assuming Windows..."
+    $Path = "$HOME/Desktop/GitHub/"
 }
 $Path = $Path + "PowerShell-Bingo/Setup/tmp/"
+
+Write-Host $Path ; Read-Host -Prompt "Press Enter to continue"
 
 if (!(test-path -PathType container $Path))
 {

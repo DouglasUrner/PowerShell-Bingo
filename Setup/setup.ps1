@@ -4,6 +4,41 @@ function New-BingoFile {
         $FileLength
     )
 
+    # List of extensions to use.
+    $exts = @(
+        ".c",
+        ".cpp",
+        ".cs",
+        ".csv",
+        ".doc",
+        ".docx",
+        ".dotx",
+        ".gif",
+        ".h",
+        ".indd",
+        ".jar",
+        ".java",
+        ".jpg",
+        ".js",
+        ".md",
+        ".nef",
+        ".odt",
+        ".pdf",
+        ".png",
+        ".ps1",
+        ".psd",
+        ".rb",
+        ".rs",
+        ".rtf",
+        ".sh",
+        ".txt",
+        ".unitypackage",
+        ".xls",
+        ".xlsx"
+    )
+
+    $FileName += $exts[(Get-Random -Maximum $exts.Length)]
+
     # Create file.
     $f = New-Object System.IO.FileStream $FileName, Create, ReadWrite
     $f.SetLength($FileLength)
@@ -24,18 +59,41 @@ function New-RandomDate {
         [string] $Seed
     )
 
+    $MaxYear = 2023 # XXX - set based on current year.
+
     $LeftHyphen = $Seed.IndexOf('-')
     $RightHyphen = $Seed.LastIndexOf('-')
 
+    # Select a year
     $MinYear = $Seed.Substring(0, $LeftHyphen)
-    $MinMonth = $Seed.Substring($LeftHyphen + 1, $RightHyphen - $LeftHyphen - 1)
-    $MinDay = $Seed.Substring($RightHyphen + 1)
-
-    $MaxYear = 2023
-
     $year = Get-Random -Minimum $MinYear -Maximum $MaxYear
+
+    # Select a month
+    if ($year -eq $MinYear) {
+        $MinMonth = $Seed.Substring($LeftHyphen + 1, $RightHyphen - $LeftHyphen - 1)
+    } else {
+        $MinMonth = 1
+    }
     $month = Get-Random -Minimum $MinMonth -Maximum 12
-    $day = Get-Random -Minimum $MinDay -Maximum 28
+
+    # Select day
+    if ($year -eq $MinYear -and $month -eq $MinMonth) {
+        $MinDay = $Seed.Substring($RightHyphen + 1)
+    } else {
+        $MinDay = 1
+    }
+    switch ($month)
+    {
+        2       { $MaxDay = 28 }
+        4       { $MaxDay = 30 }
+        6       { $MaxDay = 30 }
+        9       { $MaxDay = 30 }
+        11      { $MaxDay = 30 }
+        default { $MaxDay = 31 }
+    }
+
+    
+    $day = Get-Random -Minimum $MinDay -Maximum $MaxDay
 
     return $year.ToString() + "-" + $month.ToString() + "-" + $day.ToString()
 }
@@ -80,7 +138,7 @@ for ($i = 0; $i -lt (Get-Random -Minimum $DirMin -Maximum $Dir1Max); $i++) {
             New-Item -ItemType Directory -Path $Dir2
         }
         for ($k = 0; $k -lt (Get-Random -Maximum $FileMax); $k++) {
-            $FullPath = $Dir2 + "/" + $k + ".mt"
+            $FullPath = $Dir2 + "/" + $k
             New-BingoFile $FullPath (Get-Random -Maximum 32768)
         }
     }
